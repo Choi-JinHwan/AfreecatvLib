@@ -1,3 +1,5 @@
+@file:Suppress("PrivatePropertyName")
+
 package me.taromati.afreecatv
 
 import java.net.URI
@@ -37,7 +39,7 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
 
     private var pingThread: Thread? = null
     private var isAlive = true
-    private val packetMap: MutableMap<String, AfreecatvCallback> = HashMap()
+    private val packetMap: MutableMap<String, AfreecatvCallback> = mutableMapOf()
 
     init {
         this.connectionLostTimeout = 0
@@ -52,13 +54,13 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
         isAlive = true
         pingThread = Thread {
             val connectPacketBytes: ByteArray =
-                CONNECT_PACKET.toByteArray(StandardCharsets.UTF_8)
+                CONNECT_PACKET.toByteArray()
             send(connectPacketBytes)
             while (isAlive) {
                 try {
                     Thread.sleep(59996)
                     val pingPacketBytes: ByteArray =
-                        PING_PACKET.toByteArray(StandardCharsets.UTF_8)
+                        PING_PACKET.toByteArray()
                     send(pingPacketBytes)
                     for ((key, packet) in packetMap) {
                         if (packet.receivedTime.isBefore(LocalDateTime.now().minusMinutes(1))) {
@@ -75,7 +77,7 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
     override fun onMessage(message: String) {}
 
     override fun onMessage(bytes: ByteBuffer) {
-        val message = String(bytes.array(), StandardCharsets.UTF_8)
+        val message = bytes.array().toString(StandardCharsets.UTF_8)
         if (CONNECT_RES_PACKET == message) {
             val CHATNO = info.channelNumber
             val JOIN_PACKET = makePacket(KEY_JOIN, String.format("%s%s%s", F, CHATNO, F.repeat(5)))
@@ -94,33 +96,37 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
                 else -> callback.dataList
             }
 
-            if (dataList == null) return
+            dataList ?: return
 
             var msg: String? = null
             var nickname: String? = null
             var userId: String? = null
             var payAmount = 0
             var balloonAmount = 0
-            if (cmd == KEY_DONE) {
-                packetMap[dataList[2]] = callback
-            } else if (cmd == KEY_CHAT) {
-                val nick = dataList[5]
-                if (packetMap.containsKey(nick)) {
-                    val doneCallback = packetMap.getOrDefault(nick, null) ?: return
-                    packetMap.remove(nick)
-                    msg = dataList[0]
-                    userId = dataList[1]
-                    nickname = doneCallback.dataList[2]
-                    payAmount = doneCallback.dataList[3].toInt() * 100
-                    balloonAmount = doneCallback.dataList[3].toInt()
-                } else {
-                    msg = dataList[0]
-                    nickname = nick
+            when (cmd) {
+                KEY_DONE -> {
+                    packetMap[dataList[2]] = callback
                 }
-            } else if (cmd == KEY_SUB) {
-                val nick = dataList[5]
-                if (packetMap.containsKey(nick)) {
-                    packetMap.remove(nick)
+                KEY_CHAT -> {
+                    val nick = dataList[5]
+                    if (packetMap.containsKey(nick)) {
+                        val doneCallback = packetMap.getOrDefault(nick, null) ?: return
+                        packetMap.remove(nick)
+                        msg = dataList[0]
+                        userId = dataList[1]
+                        nickname = doneCallback.dataList[2]
+                        payAmount = doneCallback.dataList[3].toInt() * 100
+                        balloonAmount = doneCallback.dataList[3].toInt()
+                    } else {
+                        msg = dataList[0]
+                        nickname = nick
+                    }
+                }
+                KEY_SUB -> {
+                    val nick = dataList[5]
+                    if (packetMap.containsKey(nick)) {
+                        packetMap.remove(nick)
+                    }
                 }
             }
 
@@ -142,7 +148,7 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
 
     override fun onClose(code: Int, reason: String, remote: Boolean) {
         this.isAlive = false
-        pingThread!!.interrupt()
+        pingThread?.interrupt()
         this.pingThread = null
     }
 
