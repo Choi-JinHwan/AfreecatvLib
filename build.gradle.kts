@@ -3,13 +3,13 @@
 plugins {
     java
     `java-library`
-    `maven-publish`
+    id("maven-publish")
     id("com.github.johnrengelman.shadow") version "7.1.2"
     kotlin("jvm") version "2.1.0"
 }
 
 group = "com.github.Choi-JinHwan"
-version = "1.0.3"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -51,4 +51,15 @@ java {
 
 kotlin {
     jvmToolchain(21)
+}
+
+publishing {
+    publications {
+        create("maven-public", MavenPublication::class) {
+            groupId = rootProject.group.toString()
+            artifactId = "library"
+            version = "1.0.0"
+            from(components.getByName("java"))
+        }
+    }
 }
