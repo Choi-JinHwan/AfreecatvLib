@@ -124,14 +124,16 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
                 }
             }
 
-            if (nickname != null && msg != null) {
-                msg = msg.ifEmpty { "없음" }
-                if (payAmount > 0 && balloonAmount > 0) {
-                    processChatMessage(DonationChatEvent(this.channelId, userId, nickname, msg, payAmount, balloonAmount))
-                } else {
-                    processChatMessage(MessageChatEvent(this.channelId, nickname, msg))
-                }
+            if (nickname == null || msg == null) {
+                return
             }
+            msg = msg.ifEmpty { "없음" }
+            val event = if (payAmount > 0 && balloonAmount > 0) {
+                DonationChatEvent(this.channelId, userId, nickname, msg, payAmount, balloonAmount)
+            } else {
+                MessageChatEvent(this.channelId, nickname, msg)
+            }
+            processChatMessage(event)
         } catch (ignored: Exception) {
         }
     }
@@ -153,10 +155,11 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
     }
 
     private fun processChatMessage(event: AfreecatvEvent) {
-        when(event)  {
+        when (event) {
             is DonationChatEvent -> {
                 api.onDonationChat(event)
             }
+
             is MessageChatEvent -> {
                 api.onMessageChat(event)
             }
