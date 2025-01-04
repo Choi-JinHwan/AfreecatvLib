@@ -40,24 +40,3 @@ tasks.withType<JavaCompile> {
 tasks.shadowJar {
     archiveFileName.set("AfreecatvLib.jar")
 }
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "me.taromati"
-            artifactId = "afreecatvlib"
-
-            from(components["java"])
-        }
-    }
-
-    repositories {
-        maven {
-            url = uri("https://repo.repsy.io/mvn/lone64/platform")
-            credentials {
-                username = properties["mavenUser"] as String
-                password = properties["mavenPass"] as String
-            }
-        }
-    }
-}
