@@ -1,16 +1,13 @@
-package me.taromati.afreecatv.event.implement;
+package me.taromati.afreecatv.event.implement
 
-import me.taromati.afreecatv.event.AfreecatvEvent;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.AllArgsConstructor
+import lombok.Getter
+import me.taromati.afreecatv.event.AfreecatvEvent
 
 @Getter
 @AllArgsConstructor
-public class MessageChatEvent implements AfreecatvEvent {
-
-    private final String channelId;
-
-    private final String nickname;
-    private final String message;
-
-}
+class MessageChatEvent(
+    val channelId: String? = null,
+    val nickname: String? = null,
+    val message: String? = null,
+) : AfreecatvEvent
