@@ -16,7 +16,7 @@ public class AfreecatvCallback {
 
     public AfreecatvCallback(String[] args) {
         this.dataList = new ArrayList<>(Arrays.asList(args));
-        String cmd = dataList.remove(0);
+        String cmd = dataList.removeFirst();
         this.command = cmd.substring(0, 4);
     }
 
