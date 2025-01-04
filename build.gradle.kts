@@ -5,6 +5,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2"
+    kotlin("jvm") version "2.1.0"
 }
 
 group = "me.taromati.afreecatvlib"
@@ -31,6 +32,7 @@ dependencies {
     compileOnly("commons-io:commons-io:2.16.1")
     compileOnly("org.jetbrains:annotations:20.1.0")
     compileOnly("com.googlecode.json-simple:json-simple:1.1.1")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks.withType<JavaCompile> {
@@ -39,4 +41,7 @@ tasks.withType<JavaCompile> {
 
 tasks.shadowJar {
     archiveFileName.set("AfreecatvLib.jar")
+}
+kotlin {
+    jvmToolchain(21)
 }
