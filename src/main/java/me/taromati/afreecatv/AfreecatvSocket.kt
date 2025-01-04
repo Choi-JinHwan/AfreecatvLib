@@ -98,6 +98,7 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
 
             var msg: String? = null
             var nickname: String? = null
+            var userId: String? = null
             var payAmount = 0
             var balloonAmount = 0
             if (cmd == KEY_DONE) {
@@ -108,6 +109,7 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
                     val doneCallback = packetMap.getOrDefault(nick, null) ?: return
                     packetMap.remove(nick)
                     msg = dataList[0]
+                    userId = dataList[1]
                     nickname = doneCallback.dataList[2]
                     payAmount = doneCallback.dataList[3].toInt() * 100
                     balloonAmount = doneCallback.dataList[3].toInt()
@@ -125,7 +127,7 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
             if (nickname != null && msg != null) {
                 msg = msg.ifEmpty { "없음" }
                 if (payAmount > 0 && balloonAmount > 0) {
-                    processChatMessage(DonationChatEvent(this.channelId, nickname, msg, payAmount, balloonAmount))
+                    processChatMessage(DonationChatEvent(this.channelId, userId, nickname, msg, payAmount, balloonAmount))
                 } else {
                     processChatMessage(MessageChatEvent(this.channelId, nickname, msg))
                 }
