@@ -14,12 +14,4 @@ public class AfreecatvException extends RuntimeException {
         this.message = code.getMessage();
         this.code = code.getCode();
     }
-
-    public AfreecatvException(String code, String message) {
-        super(message);
-
-        this.message = message;
-        this.code = code;
-    }
-
 }
