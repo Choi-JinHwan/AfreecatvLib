@@ -26,7 +26,7 @@ public class AfreecatvAPI {
     private String channelId;
     private AfreecatvSocket socket;
 
-    private final List<AfreecatvListener> listeners = new ArrayList<>();
+    public final List<AfreecatvListener> listeners = new ArrayList<>();
 
     public AfreecatvAPI(final String channelId) {
         this.channelId = channelId;
