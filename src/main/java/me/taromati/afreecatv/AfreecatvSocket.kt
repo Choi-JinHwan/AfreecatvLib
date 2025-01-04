@@ -124,14 +124,16 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
                 }
             }
 
-            if (nickname == null || msg == null) {
-                return
-            }
-            msg = msg.ifEmpty { "없음" }
-            val event = if (payAmount > 0 && balloonAmount > 0) {
-                DonationChatEvent(this.channelId, userId, nickname, msg, payAmount, balloonAmount)
-            } else {
-                MessageChatEvent(this.channelId, nickname, msg)
+            nickname ?: return
+
+            val event = when {
+                payAmount > 0 && balloonAmount > 0 -> {
+                    DonationChatEvent(this.channelId, userId, nickname, msg, payAmount, balloonAmount)
+                }
+                msg == null -> return
+                else -> {
+                    MessageChatEvent(this.channelId, nickname, msg)
+                }
             }
             processChatMessage(event)
         } catch (ignored: Exception) {
