@@ -10,9 +10,9 @@ import java.util.List;
 @Getter
 public class AfreecatvCallback {
 
-    private final String command;
-    private final List<String> dataList;
-    private final LocalDateTime receivedTime = LocalDateTime.now();
+    final String command;
+    final List<String> dataList;
+    final LocalDateTime receivedTime = LocalDateTime.now();
 
     public AfreecatvCallback(String[] args) {
         this.dataList = new ArrayList<>(Arrays.asList(args));
