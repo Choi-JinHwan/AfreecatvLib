@@ -10,6 +10,8 @@ import java.nio.charset.StandardCharsets
 import lombok.Getter
 import me.taromati.afreecatv.data.AfreecatvInfo
 import me.taromati.afreecatv.data.AfreecatvLiveInfo
+import me.taromati.afreecatv.event.implement.DonationChatEvent
+import me.taromati.afreecatv.event.implement.MessageChatEvent
 import me.taromati.afreecatv.exception.AfreecatvException
 import me.taromati.afreecatv.exception.ExceptionCode
 import me.taromati.afreecatv.listener.AfreecatvListener
@@ -65,6 +67,14 @@ class AfreecatvAPI(private var channelId: String?) {
     fun addListeners(listeners: List<AfreecatvListener>): AfreecatvAPI {
         this.listeners.addAll(listeners)
         return this
+    }
+
+    fun onMessageChat(e: MessageChatEvent?) {
+        listeners.forEach { listener -> listener.onMessageChat(e) }
+    }
+
+    fun onDonationChat(e: DonationChatEvent?) {
+        listeners.forEach { listener -> listener.onDonationChat(e) }
     }
 
     val isConnected: Boolean

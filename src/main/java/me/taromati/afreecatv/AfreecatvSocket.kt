@@ -153,11 +153,12 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
     }
 
     private fun processChatMessage(event: AfreecatvEvent) {
-        for (listener in api.listeners) {
-            if (event is DonationChatEvent) {
-                listener.onDonationChat(event)
-            } else if (event is MessageChatEvent) {
-                listener.onMessageChat(event)
+        when(event)  {
+            is DonationChatEvent -> {
+                api.onDonationChat(event)
+            }
+            is MessageChatEvent -> {
+                api.onMessageChat(event)
             }
         }
     }
