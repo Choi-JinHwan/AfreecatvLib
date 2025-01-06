@@ -103,11 +103,27 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
             var userId: String? = null
             var payAmount = 0
             var balloonAmount = 0
-            when (cmd) {
-                KEY_DONE -> {
+//          까비 1개 도네
+//          	000500006500까비eqaz1366003eqaz136665568|163840-10B6D826CABCF-1
+//          저녁은 좀 2개 도네
+//          	000500007200저격은 좀eqaz1366003eqaz136665568|163840-10B6D826CABCF-1
+//          쿨도네 1개
+//          	001800006800jooinvlupeqaz1366eqaz136610062351_0004001900kor_custom04
+//          쿨도네 3개
+//          	001800005900jooinvlupeqaz1366eqaz13663006235300kor_custom13
+            when  {
+                cmd == KEY_DONE && dataList[10] == "-1" -> {
                     packetMap[dataList[2]] = callback
                 }
-                KEY_CHAT -> {
+                // 쿨도네
+                cmd == KEY_DONE && dataList.last() != "-1" -> {
+                    msg = null
+                    userId = dataList[1]
+                    nickname = dataList[2]
+                    payAmount = dataList[3].toInt() * 100
+                    balloonAmount = dataList[3].toInt()
+                }
+                cmd == KEY_CHAT -> {
                     val nick = dataList[5]
                     if (packetMap.containsKey(nick)) {
                         val doneCallback = packetMap.getOrDefault(nick, null) ?: return
@@ -118,11 +134,12 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
                         payAmount = doneCallback.dataList[3].toInt() * 100
                         balloonAmount = doneCallback.dataList[3].toInt()
                     } else {
+                        userId = dataList[1]
                         msg = dataList[0]
                         nickname = nick
                     }
                 }
-                KEY_SUB -> {
+                cmd == KEY_SUB -> {
                     val nick = dataList[5]
                     if (packetMap.containsKey(nick)) {
                         packetMap.remove(nick)
