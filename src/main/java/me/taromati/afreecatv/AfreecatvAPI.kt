@@ -97,7 +97,7 @@ class AfreecatvAPI(private var channelId: String?) {
         fun getLiveInfo(bjId: String): AfreecatvLiveInfo {
             try {
                 val response = HttpClient.newHttpClient().use { client ->
-                    val bodyJson = JSONObject(
+                    val bodyJson =
                         mapOf(
                             "bid" to bjId,
                             "type" to "live",
@@ -109,7 +109,6 @@ class AfreecatvAPI(private var channelId: String?) {
                             "stream_type" to "common",
                             "quality" to "HD",
                         )
-                    )
 
                     val request = HttpRequest.newBuilder().POST(formData(bodyJson))
                         .uri(URI.create("https://live.afreecatv.com/afreeca/player_live_api.php?bjid=$bjId"))
@@ -148,21 +147,20 @@ class AfreecatvAPI(private var channelId: String?) {
         private fun getInfo(bjId: String?): AfreecatvInfo {
             try {
                 val client = HttpClient.newHttpClient()
-                val bodyJson = JSONObject(
-                    mapOf(
-                        "bid" to bjId,
-                        "type" to "live",
-                        "confirm_adult" to "false",
-                        "player_type" to "html5",
-                        "mode" to "landing",
-                        "from_api" to "0",
-                        "pwd" to "",
-                        "stream_type" to "common",
-                        "quality" to "HD",
-                    )
+                val bodyJson = mapOf(
+                    "bid" to bjId,
+                    "type" to "live",
+                    "confirm_adult" to "false",
+                    "player_type" to "html5",
+                    "mode" to "landing",
+                    "from_api" to "0",
+                    "pwd" to "",
+                    "stream_type" to "common",
+                    "quality" to "HD",
                 )
+
                 val request = HttpRequest.newBuilder().POST(formData(bodyJson))
-                    .uri(URI.create("https://live.afreecatv.com/afreeca/player_live_api.php?bjid=$bjId"))
+                    .uri(URI.create("https://live.sooplive.co.kr/afreeca/player_live_api.php?bjid=$bjId"))
                     .headers(
                         "User-Agent",
                         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
@@ -190,23 +188,23 @@ class AfreecatvAPI(private var channelId: String?) {
             }
         }
 
-        private fun formData(data: JSONObject): BodyPublisher {
+        private fun formData(data: Map<String, String?>): BodyPublisher {
             val builder = StringBuilder()
-            for ((key, value) in data) {
+            for (pair in data) {
                 builder.apply {
                     if (isNotEmpty()) {
                         append("&")
                     }
-                    append(urlEncode(key.toString()))
+                    append(pair.key)
                     append("=")
-                    append(urlEncode(value.toString()))
+                    append(urlEncode(pair.value ?: ""))
                 }
             }
             return HttpRequest.BodyPublishers.ofString(builder.toString())
         }
 
-        private fun urlEncode(data: String) {
-            URLEncoder.encode(data, StandardCharsets.UTF_8)
+        private fun urlEncode(data: String): String {
+            return URLEncoder.encode(data, StandardCharsets.UTF_8)
         }
     }
 }
