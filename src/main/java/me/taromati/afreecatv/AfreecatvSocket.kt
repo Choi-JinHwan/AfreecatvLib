@@ -103,6 +103,7 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
             var userId: String? = null
             var payAmount = 0
             var balloonAmount = 0
+//            마지막 -1은 구독?이 아닌 경우인듯
 //          까비 1개 도네
 //          	000500006500까비eqaz1366003eqaz136665568|163840-10B6D826CABCF-1
 //          저녁은 좀 2개 도네
@@ -112,11 +113,11 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
 //          쿨도네 3개
 //          	001800005900jooinvlupeqaz1366eqaz13663006235300kor_custom13
             when  {
-                cmd == KEY_DONE && dataList[10] == "-1" -> {
+                cmd == KEY_DONE && dataList[0] != channelId -> {
                     packetMap[dataList[2]] = callback
                 }
                 // 쿨도네
-                cmd == KEY_DONE && dataList.last() != "-1" -> {
+                cmd == KEY_DONE && dataList[0] == channelId -> {
                     msg = null
                     userId = dataList[1]
                     nickname = dataList[2]
