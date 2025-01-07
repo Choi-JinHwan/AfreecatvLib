@@ -32,6 +32,10 @@ class AfreecatvAPI(private var channelId: String?) {
         if (!isConnected) {
             try {
                 val info = getInfo(this.channelId)
+                if(!info.isLive) {
+                    disconnect()
+                    return this
+                }
                 val draft6455 = Draft_6455(
                     emptyList(),
                     listOf<IProtocol>(Protocol("chat"))
@@ -172,13 +176,13 @@ class AfreecatvAPI(private var channelId: String?) {
                     val jsonObject = parser.parse(response.body()) as JSONObject
                     val channel = jsonObject["CHANNEL"] as JSONObject
                     return AfreecatvInfo(
-                        channel["CHDOMAIN"].toString(),
-                        channel["CHATNO"].toString(),
-                        (channel["CHPT"].toString().toInt() + 1).toString(),
-                        channel["FTK"].toString(),
-                        channel["TITLE"].toString(),
-                        channel["BJID"].toString(),
-                        channel["BNO"].toString()
+                        channel["CHDOMAIN"].takeIf { it != "null" }?.toString(),
+                        channel["CHATNO"].takeIf { it != "null" }?.toString(),
+                        (channel["CHPT"].takeIf { it != "null" }?.toString()?.toInt()?.plus(1))?.toString(),
+                        channel["FTK"].takeIf { it != "null" }?.toString(),
+                        channel["TITLE"].takeIf { it != "null" }?.toString(),
+                        channel["BJID"].takeIf { it != "null" }?.toString(),
+                        channel["BNO"].takeIf { it != "null" }?.toString()
                     )
                 } else {
                     throw AfreecatvException(ExceptionCode.API_CHAT_CHANNEL_ID_ERROR)

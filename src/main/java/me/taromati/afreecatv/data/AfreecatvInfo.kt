@@ -8,4 +8,7 @@ data class AfreecatvInfo(
     val streamerTitle: String? = null,
     val streamerId: String? = null,
     val streamerNo: String? = null,
-)
+) {
+    val isLive: Boolean
+        get() = this.channelDomain != null
+}
