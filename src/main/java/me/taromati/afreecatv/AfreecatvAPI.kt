@@ -29,13 +29,21 @@ class AfreecatvAPI(private var channelId: String?) {
     val listeners: MutableList<AfreecatvListener> = ArrayList()
 
     fun connect(): AfreecatvAPI {
+        val info = try {
+            val info = getInfo(this.channelId)
+            if(!info.isLive) {
+                disconnect()
+                return this
+            }
+            info
+        } catch (e: Exception) {
+            this.channelId = null
+            this.socket = null
+            return this
+        }
+
         if (!isConnected) {
             try {
-                val info = getInfo(this.channelId)
-                if(!info.isLive) {
-                    disconnect()
-                    return this
-                }
                 val draft6455 = Draft_6455(
                     emptyList(),
                     listOf<IProtocol>(Protocol("chat"))
