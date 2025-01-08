@@ -108,38 +108,50 @@ class AfreecatvSocket(api: AfreecatvAPI, url: String, draft6455: Draft_6455?, in
 //          	000500006500까비eqaz1366003eqaz136665568|163840-10B6D826CABCF-1
 //          저녁은 좀 2개 도네
 //          	000500007200저격은 좀eqaz1366003eqaz136665568|163840-10B6D826CABCF-1
+//          와! 진혼곡 33개 도네
+//          	001800006100jooinvlupeqaz1366eqaz1366330037153300kor_custom13
+//          	000500007400와! 진혼곡!eqaz1366003eqaz136665568|163840-11915BF6F6DD6-1
+//          아 테스트에요.... 크게 신경 안쓰셔도 돼요... 1개 도네
+//          	001800006200jooinvlupeqaz1366eqaz136610037151_0004001900junwoo
+//          	000500011900아 테스트에요.... 크게 신경 안쓰셔도 돼요...eqaz1366003eqaz136665568|163840-11915BF6F6DD6-1
+//          쿨도네 1개
+//          	001800006000jooinvlupeqaz1366eqaz136610037151_0004001900yumi
 //          쿨도네 1개
 //          	001800006800jooinvlupeqaz1366eqaz136610062351_0004001900kor_custom04
+//          쿨도네 1개
+//          	001800006100jooinvlupeqaz1366eqaz136610037151_0004001900gyuri
 //          쿨도네 3개
 //          	001800005900jooinvlupeqaz1366eqaz13663006235300kor_custom13
+//          쿨도네 5개
+//          	001800007800jooinvlupwlsghksdl111nickname_eq53009037155_0004001900kor_custom07
             when  {
-                cmd == KEY_DONE && dataList[0] != channelId -> {
-                    packetMap[dataList[2]] = callback
-                }
                 // 쿨도네
-                cmd == KEY_DONE && dataList[0] == channelId -> {
+                cmd == KEY_DONE -> {
                     msg = null
                     userId = dataList[1]
                     nickname = dataList[2]
                     payAmount = dataList[3].toInt() * 100
                     balloonAmount = dataList[3].toInt()
                 }
-                cmd == KEY_CHAT -> {
-                    val nick = dataList[5]
-                    if (packetMap.containsKey(nick)) {
-                        val doneCallback = packetMap.getOrDefault(nick, null) ?: return
-                        packetMap.remove(nick)
-                        msg = dataList[0]
-                        userId = dataList[1]
-                        nickname = doneCallback.dataList[2]
-                        payAmount = doneCallback.dataList[3].toInt() * 100
-                        balloonAmount = doneCallback.dataList[3].toInt()
-                    } else {
-                        userId = dataList[1]
-                        msg = dataList[0]
-                        nickname = nick
-                    }
-                }
+//                cmd == KEY_DONE -> {
+//                    packetMap[dataList[2]] = callback
+//                }
+//                cmd == KEY_CHAT -> {
+//                    val nick = dataList[5]
+//                    if (packetMap.containsKey(nick)) {
+//                        val doneCallback = packetMap.getOrDefault(nick, null) ?: return
+//                        packetMap.remove(nick)
+//                        msg = dataList[0]
+//                        userId = dataList[1]
+//                        nickname = doneCallback.dataList[2]
+//                        payAmount = doneCallback.dataList[3].toInt() * 100
+//                        balloonAmount = doneCallback.dataList[3].toInt()
+//                    } else {
+//                        userId = dataList[1]
+//                        msg = dataList[0]
+//                        nickname = nick
+//                    }
+//                }
                 cmd == KEY_SUB -> {
                     val nick = dataList[5]
                     if (packetMap.containsKey(nick)) {
